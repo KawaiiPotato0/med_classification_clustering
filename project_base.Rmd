@@ -1,0 +1,411 @@
+---
+title: "Project_base"
+output:
+    html_document: 
+      number_sections: true
+---
+# Set working directory and libraries
+
+```{r}
+setwd("D:/STUDIA/Sem_9/Data_mining/Project")
+library(DataExplorer)
+library(scales)
+```
+
+# Labels and data
+
+```{r}
+my_labels <- c("ID", "Diagnosis", 
+            "Radius1", "Texture1", "Perimeter1", 
+            "Area1", "Smoothness1", "Compactness1", 
+            "Concavity1", "Concave_points1", "Symmetry1", "Fractal_dimension1",
+            
+            "Radius2", "Texture2", "Perimeter2", 
+            "Area2", "Smoothness2", "Compactness2", 
+            "Concavity2", "Concave_points2", "Symmetry2", "Fractal_dimension2",
+            
+            "Radius3", "Texture3", "Perimeter3", 
+            "Area3", "Smoothness3", "Compactness3", 
+            "Concavity3", "Concave_points3", "Symmetry3", "Fractal_dimension3")
+
+data <- read.csv(file="wdbc.data", header = FALSE, col.names=my_labels, stringsAsFactors = TRUE)
+attach(data)
+```
+
+## Checking basic info
+
+```{r}
+# View(data)
+```
+
+```{r}
+# M = malignant (złośliwy), B = benign (łagodny)
+
+is.factor(Diagnosis) #T
+sum(is.na(data)) #0
+```
+
+```{r}
+my.summary <- function(X)
+{
+  results <- c(min(X),quantile(X,0.25), median(X), mean(X), quantile(X,0.75), max(X), var(X), sd(X), IQR(X))
+  names(results) <- c("Min", "Q1", "Median", "Mean", "Q3", "Max", "Var", "Sd", "IQR")
+  return(results)
+}
+
+
+```
+```{r}
+data_summary <- data.frame("Features"=c(
+            "Radius1", "Texture1", "Perimeter1", 
+            "Area1", "Smoothness1", "Compactness1", 
+            "Concavity1", "Concave_points1", "Symmetry1", "Fractal_dimension1",
+            
+            "Radius2", "Texture2", "Perimeter2", 
+            "Area2", "Smoothness2", "Compactness2", 
+            "Concavity2", "Concave_points2", "Symmetry2", "Fractal_dimension2",
+            
+            "Radius3", "Texture3", "Perimeter3", 
+            "Area3", "Smoothness3", "Compactness3", 
+            "Concavity3", "Concave_points3", "Symmetry3", "Fractal_dimension3"), 
+           "Min"=round(apply(data[,3:32],2,min),2), 
+           "Q1"=round(apply(data[,3:32],2,function(x) quantile(x,0.25)),2), 
+           "Median"=round(apply(data[,3:32],2,median),2), 
+           "Mean"=round(apply(data[,3:32],2,mean),2),
+           "Q3"=round(apply(data[,3:32],2,function(x) quantile(x,0.75)),2),
+           "Max"=round(apply(data[,3:32],2,max),2), 
+           "Var"=round(apply(data[,3:32],2,var),2),
+           "Sd"=round(apply(data[,3:32],2,sd),2),
+           "IQR"=round(apply(data[,3:32],2,IQR),2),row.names = NULL) 
+```
+```{r}
+data_summary
+```
+
+```{r}
+t(introduce(data))
+```
+
+```{r}
+#dev.off()
+plot_intro(data)
+```
+
+```{r}
+table(Diagnosis)
+```
+
+# Histograms and boxplots
+
+## Relative to the same label titles
+ Radius
+
+```{r}
+par(mfrow=c(2,3))
+hist(Radius1)
+hist(Radius2)
+hist(Radius3)
+boxplot(Radius1, main="Radius1")
+boxplot(Radius2, main="Radius2")
+boxplot(Radius3, main="Radius3")
+```
+ Texture
+```{r}
+par(mfrow=c(2,3))
+hist(Texture1)
+hist(Texture2)
+hist(Texture3)
+boxplot(Texture1, main="Texture1")
+boxplot(Texture2, main="Texture2")
+boxplot(Texture3, main="Texture3")
+```
+ Perimeter
+```{r}
+par(mfrow=c(2,3))
+hist(Perimeter1)
+hist(Perimeter2)
+hist(Perimeter3)
+boxplot(Perimeter1, main="Perimeter1")
+boxplot(Perimeter2, main="Perimeter2")
+boxplot(Perimeter3, main="Perimeter3")
+```
+ Area
+```{r}
+par(mfrow=c(2,3))
+hist(Area1)
+hist(Area2)
+hist(Area3)
+boxplot(Area1, main="Area1")
+boxplot(Area2, main="Area2")
+boxplot(Area3, main="Area3")
+```
+ Smoothness
+```{r}
+par(mfrow=c(2,3))
+hist(Smoothness1)
+hist(Smoothness2)
+hist(Smoothness3)
+boxplot(Smoothness1, main="Smoothness1")
+boxplot(Smoothness2, main="Smoothness2")
+boxplot(Smoothness3, main="Smoothness3")
+```
+ Compactness
+```{r}
+par(mfrow=c(2,3))
+hist(Compactness1)
+hist(Compactness2)
+hist(Compactness3)
+boxplot(Compactness1, main="Compectness1")
+boxplot(Compactness2, main="Compectness2")
+boxplot(Compactness3, main="Compectness3")
+```
+ Concavity
+```{r}
+par(mfrow=c(2,3))
+hist(Concavity1)
+hist(Concavity2)
+hist(Concavity3)
+boxplot(Concavity1, main="Concavity1")
+boxplot(Concavity2, main="Concavity2")
+boxplot(Concavity3, main="Concavity3")
+```
+ Concave points
+```{r}
+par(mfrow=c(2,3))
+hist(Concave_points1)
+hist(Concave_points2)
+hist(Concave_points3)
+boxplot(Concave_points1, main="Concave_points1")
+boxplot(Concave_points2, main="Concave_points2")
+boxplot(Concave_points3, main="Concave_points3")
+```
+ Symmetry
+```{r}
+par(mfrow=c(2,3))
+hist(Symmetry1)
+hist(Symmetry2)
+hist(Symmetry3)
+boxplot(Symmetry1, main="Symmetry1")
+boxplot(Symmetry2, main="Symmetry2")
+boxplot(Symmetry3, main="Symmetry3")
+```
+ Fractal dimension
+```{r}
+par(mfrow=c(2,3))
+hist(Fractal_dimension1)
+hist(Fractal_dimension2)
+hist(Fractal_dimension3)
+boxplot(Fractal_dimension1, main="Fractal_dimension1")
+boxplot(Fractal_dimension2, main="Fractal_dimension2")
+boxplot(Fractal_dimension3, main="Fractal_dimension3")
+```
+
+```{r}
+par(mfrow=c(1,1))
+```
+## Relative to the same value of labels, tumor (?)
+```{r}
+my_labels_1 <- c("Diagnosis", "Radius1", "Texture1", "Perimeter1", 
+                "Area1", "Smoothness1", "Compactness1", 
+                "Concavity1", "Concave_points1", "Symmetry1", "Fractal_dimension1")
+  
+my_labels_2 <- c("Diagnosis", "Radius2", "Texture2", "Perimeter2", 
+                "Area2", "Smoothness2", "Compactness2", 
+                "Concavity2", "Concave_points2", "Symmetry2", "Fractal_dimension2")
+                
+my_labels_3 <- c("Diagnosis", "Radius3", "Texture3", "Perimeter3", 
+                "Area3", "Smoothness3", "Compactness3", 
+                "Concavity3", "Concave_points3", "Symmetry3", "Fractal_dimension3")
+
+data1 <- data[my_labels_1]
+data2 <- data[my_labels_2]
+data3 <- data[my_labels_3]
+```
+ Labels with 1
+```{r}
+png("hist_labels_1.png", width= 2048, height = 1536, res = 300)
+plot_histogram(data1)
+dev.off()
+```
+```{r}
+#plot_boxplot(data, by="Diagnosis") <- do we need this?
+```
+```{r}
+png("boxplt_labels_1.png", width= 2048, height = 1536, res = 300)
+plot_boxplot(data1, by="Diagnosis")
+dev.off()
+```
+
+ Labels with 2
+```{r}
+png("hist_labels_2.png", width= 2048, height = 1536, res = 300)
+plot_histogram(data2)
+dev.off()
+```
+```{r}
+png("boxplt_labels_2.png", width= 2048, height = 1536, res = 300)
+plot_boxplot(data2, by="Diagnosis")
+dev.off()
+```
+
+ Labels with 3
+```{r}
+png("hist_labels_3.png", width= 2048, height = 1536, res = 300)
+plot_histogram(data3)
+dev.off()
+```
+```{r}
+png("boxplt_labels_3.png", width= 2048, height = 1536, res = 300)
+plot_boxplot(data3, by="Diagnosis")
+dev.off()
+```
+
+# Density relative to the same value of labels, tumor (?)
+## Labels with 1
+```{r}
+png("density_1.png", width= 2048, height = 1536, res = 300)
+plot_density(data1)
+dev.off()
+```
+## Labels with 2
+```{r}
+png("density_2.png", width= 2048, height = 1536, res = 300)
+plot_density(data2)
+dev.off()
+```
+## Labels with 3
+```{r}
+png("density_3.png", width= 2048, height = 1536, res = 300)
+plot_density(data3)
+dev.off()
+```
+
+# QQ plots relative to the same value of labels, tumor (?)
+## Labels with 1
+```{r}
+png("qqplt_1.png", width= 2048, height = 1536, res = 300)
+plot_qq(data1, ncol = 4L)
+dev.off()
+```
+## Labels with 2
+```{r}
+png("qqplt_2.png", width= 2048, height = 1536, res = 300)
+plot_qq(data2, ncol = 4L)
+dev.off()
+```
+## Labels with 3
+```{r}
+png("qqplt_3.png", width= 2048, height = 1536, res = 300)
+plot_qq(data3, ncol = 4L)
+dev.off()
+```
+
+# Barplot of Diagnosis variable
+```{r}
+barplot(table(Diagnosis), main="Diagnosis", col=rainbow(2), ylab="Counts", xlab = c(" M = malignant", "B = benign"))
+grid()
+```
+```{r}
+plot_bar(data)
+```
+
+# Correlation relative to the same value of labels, tumor (?)
+## Whole data
+```{r}
+png("correlation_full.png", width= 2048, height = 1536, res = 300)
+plot_correlation(data, type = "continuous") # <- ugly
+dev.off()
+```
+
+## Labels with 1
+```{r}
+png("correlation_1.png", width= 2048, height = 1536, res = 300)
+plot_correlation(data1, type = "continuous")
+dev.off()
+```
+## Labels with 2
+```{r}
+png("correlation_2.png", width= 2048, height = 1536, res = 300)
+plot_correlation(data2, type = "continuous")
+dev.off()
+```
+## Labels with 3
+```{r}
+png("correlation_3.png", width= 2048, height = 1536, res = 300)
+plot_correlation(data3, type = "continuous")
+dev.off()
+```
+
+# Scatterplots
+
+```{r}
+data$Diag_bin <-  sapply(levels(Diagnosis), function(x) as.integer(x == Diagnosis))
+data$Diag_bin <- data$Diag_bin+1
+```
+
+## Radiuses
+```{r}
+png("scatter_radiuses.png", width= 2048, height = 1536, res = 300)
+pairs(cbind(Radius1,Radius2, Radius3),col=alpha(data$Diag_bin, 0.3), pch=16, cex=0.5)
+dev.off()
+```
+
+
+## Labels with 1
+
+
+```{r}
+pairs(cbind(Radius1, Texture1 ,Perimeter1, Area1, Smoothness1, Compactness1, Concavity1, Concave_points1, Symmetry1, Fractal_dimension1), col=alpha(data$Diag_bin, 0.3), pch=16, cex=0.5)
+```
+## Labels with 2
+```{r}
+pairs(cbind(Radius2, Texture2 ,Perimeter2, Area2, Smoothness2, Compactness2, Concavity2, Concave_points2, Symmetry2, Fractal_dimension2),col=alpha(data$Diag_bin, 0.3), pch=16, cex=0.5)
+```
+
+## Labels with 3
+```{r}
+pairs(cbind(Radius3, Texture3 ,Perimeter3, Area3, Smoothness3, Compactness3, Concavity3, Concave_points3, Symmetry3, Fractal_dimension3),col=alpha(data$Diag_bin, 0.3), pch=16, cex=0.5)
+```
+
+
+```{r}
+png("scatter_1half_1_2.png", width= 2048, height = 1536, res = 300)
+pairs(cbind(Radius1, Texture1 ,Perimeter1, Area1, Smoothness1, Radius2, Texture2 ,Perimeter2, Area2, Smoothness2), col=alpha(data$Diag_bin, 0.3), pch=16, cex=0.5)
+dev.off()
+```
+
+```{r}
+png("scatter_1half_1_3.png", width= 2048, height = 1536, res = 300)
+pairs(cbind(Radius1, Texture1 ,Perimeter1, Area1, Smoothness1, Radius3, Texture3 ,Perimeter3, Area3, Smoothness3), col=alpha(data$Diag_bin, 0.3), pch=16, cex=0.5)
+dev.off()
+```
+
+```{r}
+png("scatter_1half_3_2.png", width= 2048, height = 1536, res = 300)
+pairs(cbind(Radius3, Texture3 ,Perimeter3, Area3, Smoothness3, Radius2, Texture2 ,Perimeter2, Area2, Smoothness2), col=alpha(data$Diag_bin, 0.3), pch=16, cex=0.5)
+dev.off()
+```
+
+
+```{r}
+png("scatter_2half_2_3.png", width= 2048, height = 1536, res = 300)
+pairs(cbind(Compactness2, Concavity2, Concave_points2, Symmetry2, Fractal_dimension2, Compactness3, Concavity3, Concave_points3, Symmetry3, Fractal_dimension3),col=alpha(data$Diag_bin, 0.3), pch=16, cex=0.5)
+dev.off()
+```
+
+```{r}
+png("scatter_2half_1_3.png", width= 2048, height = 1536, res = 300)
+pairs(cbind(Compactness1, Concavity1, Concave_points1, Symmetry1, Fractal_dimension1, Compactness3, Concavity3, Concave_points3, Symmetry3, Fractal_dimension3),col=alpha(data$Diag_bin, 0.3), pch=16, cex=0.5)
+dev.off()
+```
+
+```{r}
+png("scatter_2half_2_1.png", width= 2048, height = 1536, res = 300)
+pairs(cbind(Compactness2, Concavity2, Concave_points2, Symmetry2, Fractal_dimension2, Compactness1, Concavity1, Concave_points1, Symmetry1, Fractal_dimension1),col=alpha(data$Diag_bin, 0.3), pch=16, cex=0.5)
+dev.off()
+```
+
+```{r}
+
+pairs(cbind(Compactness2, Concavity2, Concave_points2, Symmetry2, Fractal_dimension2, Compactness1, Concavity1, Concave_points1, Symmetry1, Fractal_dimension1),col=alpha(c("(data$Diag_bin==2)" ="red","(data$Diag_bin==1)"="blue"), 0.3), pch=16, cex=0.5)
+```
